@@ -1,0 +1,45 @@
+version: '3'
+silent: true
+output: prefixed
+dotenv: [.env]
+
+includes:
+  precommit: ./Taskfile.precommit.yml
+  go: ./Taskfile.go.yml
+
+# Default environment variables for projects
+env:
+  AWS_SDK_LOAD_CONFIG: 1
+  # AWS_REGION: us-east-1
+  DOCKER_BUILDKIT: 1
+  GOPRIVATE: dev.azure.com # For compatibility with Azure DevOps for go modules
+
+  # goreleaser needs these as empty if not using
+  GITHUB_TOKEN: 'null'
+  GITLAB_TOKEN:
+  GITEA_TOKEN:
+
+vars:
+  ARTIFACT_DIRECTORY: ./artifacts/
+  DOCS_DIRECTORY: ./docs/
+  TODAY: '{{ now | date "2006-01-02T15:04:05-07:00" }}'
+
+tasks:
+  default:
+    cmds:
+      - task: list
+  list:
+    desc: list tasks
+    cmds:
+      - task --list
+  vars:
+    desc: variable output
+    cmds:
+      - |
+        echo -e "{{.light_gray}}=== ℹ {{ .reversed }} Variable Info from Task {{ .nocolor }} === "
+        echo -e "{{.light_gray}}ARTIFACT_DIRECTORY          {{.nocolor}}: {{ .orange}}{{ .ARTIFACT_DIRECTORY }} {{ .nocolor }}"
+  init:
+      desc: setup tooling for project and download dependencies
+      cmds:
+        - |
+          echo "❗ not implemented"

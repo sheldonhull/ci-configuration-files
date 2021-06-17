@@ -1,0 +1,58 @@
+---
+style: github
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: MYREPOCONFIG
+
+options:
+  # tag_filter_pattern: '^v'
+  sort: 'date'
+
+  commits:
+
+  commit_groups:
+    title_maps:
+      feat: Features
+      fix: Bug Fixes
+      bugfix: Bug Fixes
+      perf: Performance Improvements
+      refactor: Code Refactoring
+      chore: Chore
+      devops: DevOps
+      debt: Tech Debt
+      hotfix: Hot Fix
+      docs: Documentation
+      ci: Continual Integration
+
+  header:
+    pattern: "^((?:[^v][^\\d\\.])[\\w\\-]*)(?:\\((.*?)\\))?\\:?\\s?(.+)$"
+    pattern_maps:
+      - Type
+      - Scope
+      - Subject
+
+  issues:
+    prefix:
+      - '#'
+
+  refs:
+    actions:
+      - Closes
+      - Fixes
+
+  merges:
+    # For Azure DevOps this title is forced by the tooling
+    # Github will be different
+    pattern: "^Merged PR '(\\d+)[:]'$"
+    pattern_maps:
+      - Source
+
+  reverts:
+    pattern: "^Revert \"([\\s\\S]*)\"$"
+    pattern_maps:
+      - Header
+
+  notes:
+    keywords:
+      - BREAKING CHANGE

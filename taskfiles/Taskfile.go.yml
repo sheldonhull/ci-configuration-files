@@ -1,0 +1,70 @@
+---
+version: '3'
+silent: true
+output: prefixed
+vars:
+  black: \033[:0;30m
+  red: \033[:0;31m
+  green: \033[:0;32m
+  orange: \033[:0;33m
+  blue: \033[:0;34m
+  purple: \033[:0;35m
+  cyan: \033[:0;36m
+  light_gray: \033[:0;37m
+  dark_gray: \033[:1;30m
+  light_red: \033[:1;31m
+  light_green: \033[:1;32m
+  yellow: \033[:1;33m
+  light_blue: \033[:1;34m
+  light_purple: \033[:1;35m
+  light_cyan: \033[:1;36m
+  white: \033[:1;37m
+  nocolor: \u001b[0m
+  reversed: \u001b[7m
+
+  GORELEASER_CONFIG: ./build/.goreleaser.yml # NOTE: replace with your desired patch
+  VERSION:
+    sh: git describe --always
+  LDFLAGS: -ldflags "-X main._version={{ .VERSION }} -X main._build={{ .BUILD }}"
+  LDFLAGS_DOCKER: -ldflags "-X main._version={{ .VERSION }} -X main._build={{ .BUILD }} -s -w"
+  GOMARKDOC_FORMAT: azure-devops  # also supports gitlab and github
+
+tasks:
+  vars:
+    desc: variable output
+    cmds:
+      - |
+        echo -e "{{.light_gray}}=== ℹ {{ .reversed }} Variable Info from Task {{ .nocolor }} === "
+        echo -e "{{.light_gray}}ARTIFACT_DIRECTORY          {{.nocolor}}: {{ .orange}}{{ .ARTIFACT_DIRECTORY }} {{ .nocolor }}"
+        echo -e "{{.light_gray}}VERSION                     {{.nocolor}}: {{ .orange}}{{ .VERSION }} {{ .nocolor }}"
+        echo -e "{{.light_gray}}VERSION_DOCKER              {{.nocolor}}: {{ .orange}}{{ .VERSION_DOCKER }} {{ .nocolor }}"
+        echo -e "{{.light_gray}}LDFLAGS                     {{.nocolor}}: {{ .orange}}{{ .LDFLAGS }} {{ .nocolor }}"
+        echo -e "{{.light_gray}}LDFLAGS_DOCKER              {{.nocolor}}: {{ .orange}}{{ .LDFLAGS_DOCKER }} {{ .nocolor }}"
+  docs:
+    desc: generate markdown documentation from project
+    cmds:
+      - |
+        mkdir -p {{ .DOCS_DIRECTORY }} && echo -e "{{.green}}created {{ .DOCS_DIRECTORY }}{{.nocolor}}"
+        # gomarkdoc ./myapp/foo  --include-unexported --format {{ .GOMARKDOC_FORMAT }} --output ./docs/myapp.md
+        echo "not implemented yet"
+        echo -e "{{.green}} ✅ generated docs{{.nocolor}}"
+  releaser:
+    desc: Use goreleaser to build for all platforms
+    cmds:
+      - |
+        export PATH=$PATH:$(go env GOPATH)/bin/
+        echo -e "{{.orange}} 🤖 $PATH{{.nocolor}}"
+        echo -e "{{.orange}} 🤖 running goreleaser to generate binaries. This will take a few minutes{{.nocolor}}"
+        GORELEASER_CURRENT_TAG={{ .VERSION }} goreleaser --snapshot --skip-publish --rm-dist --config {{ .GORELEASER_CONFIG }}
+        echo -e "{{.green}} ✅ generated binaries{{.nocolor}}"
+  init:
+    desc: install go tooling
+    cmds:
+      - |
+        go install "github.com/securego/gosec/v2/cmd/gosec@master" && echo -e  "{{.green}} ✅ gosec {{.nocolor}}"
+        go install "github.com/golangci/golangci-lint/cmd/golangci-lint@master" && echo -e  "{{.green}} ✅ golangci-lint {{.nocolor}}"
+        go install "github.com/go-critic/go-critic/cmd/gocritic@master" && echo -e  "{{.green}} ✅ gocritic {{.nocolor}}"
+        go install github.com/goreleaser/goreleaser@master && echo -e  "{{.green}} ✅ goreleaser {{.nocolor}}"
+        go get -u golang.org/x/tools/cmd/goimports && echo -e  "{{.green}} ✅ goimports {{.nocolor}}"
+        go get -u github.com/mgechev/revive && echo -e  "{{.green}} ✅ revive {{.nocolor}}"
+        go get -u golang.org/x/tools/... && echo -e  "{{.green}} ✅ goimports {{.nocolor}}"

@@ -1,0 +1,54 @@
+---
+version: '3'
+silent: true
+output: prefixed
+vars:
+  black: \033[:0;30m
+  red: \033[:0;31m
+  green: \033[:0;32m
+  orange: \033[:0;33m
+  blue: \033[:0;34m
+  purple: \033[:0;35m
+  cyan: \033[:0;36m
+  light_gray: \033[:0;37m
+  dark_gray: \033[:1;30m
+  light_red: \033[:1;31m
+  light_green: \033[:1;32m
+  yellow: \033[:1;33m
+  light_blue: \033[:1;34m
+  light_purple: \033[:1;35m
+  light_cyan: \033[:1;36m
+  white: \033[:1;37m
+  nocolor: \u001b[0m
+  reversed: \u001b[7m
+
+tasks:
+  run:
+    desc: run pre-commit against all files manually
+    cmds:
+      - pre-commit run --all-files
+  autoupdate:
+    desc: update the precommit file with latest
+    cmds:
+      - pre-commit autoupdate
+  init:
+    desc: ensure precommit tooling is available
+    prefix: ⚙️
+    cmds:
+      - |
+        {{if eq OS "windows"}}
+        pip install pre-commit || echo -e "{{.light_cyan}} 🔥 you need python installed to run this  {{.nocolor}}"
+        {{else}}
+        echo "setting up precommit. This requires brew (works on Linux & macOS)"
+        echo "if fails install linux brew with following command"
+        if brew --version &>/dev/null ; then
+          echo -e  "{{.green}} ✅ Command succeeded, validated homebrew installed {{.nocolor}}"
+        else
+          echo -e "{{.red}} ❗ Command failed. Homebrew not detected {{.nocolor}}"
+          echo -e "{{.red}}❗ install homebrew on Linux or macOS (not root) using the following command and try again: {{.nocolor}}"
+          echo -e "{{.orange}} /bin/bash -c ""\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"" {{.nocolor}}"
+        fi
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        package=pre-commit
+        brew list $package &>/dev/null || brew install $package
+        {{end}}
