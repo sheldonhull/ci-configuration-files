@@ -19,3 +19,7 @@ Grab the required files for a new project.
 ## Prerequisites
 
 Optional: VSCode & [File Vault](https://github.com/zaguiini/vscode-file-vault)
+
+## Credits
+
+- Starting point of goyek task template and launcher scripts from: [GitHub - pellared/fluentassert: Extensible fluent API for assertions.](https://github.com/pellared/fluentassert)
