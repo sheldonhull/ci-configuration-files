@@ -1,6 +1,5 @@
-$ErrorActionPreference = "Stop"
-
-Push-Location "$PSScriptRoot\build"
+$ErrorActionPreference = 'Stop'
+Push-Location (Join-Path $PSScriptRoot 'build')
 & go run . $args
 Pop-Location
 exit $global:LASTEXITCODE

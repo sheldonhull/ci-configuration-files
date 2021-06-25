@@ -1,0 +1,58 @@
+---
+# EXAMPLE USAGE
+# Refer for explanation to following link:
+# https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
+#
+
+# Install go get github.com/evilmartians/lefthook
+# This will run the key security checks that will have redacted secrets on output
+ci-checks:
+  commands:
+
+pre-push:
+  commands:
+    secrets:
+      tags: security
+      # run: bundle audit
+
+pre-commit:
+  parallel: true
+  tags: go lint
+  commands:
+    gitleaks:
+      tags: security gotool
+      name: gitleaks-scan
+      run: gitleaks --pretty --exclude-forks --config=.gitleaks.toml --depth=1 -v # This expands to past commits --repo-path=
+    markdownlint:
+      tags: docker
+      name: markdownlint-autofix
+      glob: "**/*/*.md"
+      run: docker run -i --rm -v ${PWD}:/work tmknom/markdownlint:latest --fix {files}
+    shellcheck:
+      tags: gotool
+      name: shellcheck
+      files: git ls-files -m
+      glob: "*.sh"
+      run: docker run --rm -v ${PWD}:/mnt koalaman/shellcheck:stable --format=json {files}
+    yamllint:
+      tags: formatting lint
+      name: yamllint
+      glob: "*.yml|*.yaml"
+      run: docker run --rm -v ${PWD}:/yaml sdesbure/yamllint:latest yamllint --format parsable --strict --config-file .yamllint.yaml {files}
+
+    # conventionalcommits:
+    #   tags: commit documentation
+    #   name: message uses conventional commit format
+    #   # run: commitsar
+    #   run: docker run --rm --name="commitsar" -w /src -v ${PWD}:/src aevea/commitsar
+    # conventionalcommits:
+    #   tags: commit documentation
+    #   name: message uses conventional commit format
+    #   # run: commitsar
+    #   run: docker run --rm peakfijn/commitlint -v ${PWD}:/app/ commitlint #{--volume ${PWD}/.git:/app/.git --volume ${PWD}/.commitlintrc:/app/.commitlintrc
+    #   docker run --rm --name="commitsar2" -w /src -v ${PWD}:/src commitsar/commitsar:latest
+    #   docker pull commitsar/commitsar:latest
+    # revive:
+    #   tags: gotool
+    #   name: revive
+    #   run: revive -config revive.toml --formatter friendly

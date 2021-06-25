@@ -1,0 +1,44 @@
+---
+name: renovate-$(Build.Reason)-$(SourceBranchName)-$(Date:yyyyMMdd)-$(Rev:.r)
+pool:
+  name: Azure Pipelines
+  vmImage: ubuntu-latest
+
+trigger: none
+schedules:
+  - cron: 0 07 * * Mon,Wed,Fri # Build every Monday, Wednesday, and Friday at 7am
+    displayName: MonWedFri7am # friendly name given to a specific schedule
+    branches:
+      include: [main]   #[ string ] # which branches the schedule applies to
+      # exclude: [ string ] # which branches to exclude from the schedule
+    always: true # whether to always run the pipeline or only if there have been source code changes since the last successful scheduled run. The default is false.
+
+variables:
+  - name: LOG_LEVEL
+    value: debug
+  - name: System.Debug
+    value: true
+  - group: renovate  # NOTE: Configure a variable group in library and place the GITHUB_COM_TOKEN variable in this group. Zero permissions required, just need to avoid api limits on public calls
+
+steps:
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
+    displayName: Use Yarn 1.x
+
+  - task: NodeTool@0
+    displayName: Use Node 14.15.4
+    inputs:
+      versionSpec: 14.15.4
+
+  - task: RenovateMe@0
+    displayName: Renovate
+    inputs:
+      renovateOptionsVersion: latest
+      renovateOptionsArgs: --host-rules="[{\"domainName\":\"github.com\",\"token\":\"$(GITHUB_COM_TOKEN)\"}]"
+    env:
+      GITHUB_COM_TOKEN: $(GITHUB_COM_TOKEN)
+
+  # This task needs to be installed in Azure DevOps
+  - task: WhiteSource@21
+    inputs:
+      cwd: $(System.DefaultWorkingDirectory)
+    continueOnError: true

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "dependencyDashboard": true,
+  "dependencyDashboardAutoclose": true,
+  "assignAutomerge": true,
+  "reviewersFromCodeOwners": true,
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "rebaseWhen": "behind-base-branch",
+  "prCreation": "not-pending",
+  "unicodeEmoji": true,
+  "stabilityDays": 14,
+  "gomod": {
+    "enabled": true
+  },
+  "docker": {
+    "enabled": true
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "security"
+    ]
+  },
+  "assignees": [ ],
+  "azureAutoComplete": true,
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "aws-sdk"
+      ],
+      "groupName": "aws-sdk",
+      "azureAutoApprove": true
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "labels": [
+        "docker-update"
+      ],
+      "groupName": "docker",
+      "azureAutoApprove": true
+    }
+  ],
+  "golang": {
+    "commitMessageTopic": "chore(deps): golang module {{depName}}"
+  }
+}
