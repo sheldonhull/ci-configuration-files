@@ -2,6 +2,8 @@
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/sheldonhull/ci-configuration-files)
 
+![gopherbadger-tag-do-not-edit]()
+
 ## About
 
 I often want to bootstrap a project with some tooling, but have found that not every project fits the exact same needs.

@@ -9,9 +9,26 @@ ci-checks:
 
 pre-push:
   commands:
-    secrets:
-      tags: security
-      # run: bundle audit
+    gitleaks:
+      tags: security gotool
+      name: gitleaks-scan
+      run: gitleaks --pretty --exclude-forks --config=.gitleaks.toml --depth=1  -v
+    gopherbadge:
+      tags: docs tests go
+      name: update gopherbadge
+      run: |
+        go test  ./... -coverprofile ./artifacts/cover.out
+        go tool cover -html=./artifacts/cover.out -o ./artifacts/coverage.html
+        gopherbadger -md="README.md,coverage.md"
+        git add README.md && git commit --amend --no-edit README.md
+        git add coverage.md && git commit --amend --no-edit coverage.md
+    # using semver which is installed as go tool
+    semver:
+      tags: semver
+      name: semver version update
+      run: |
+        semver up alpha
+        git add .sever.yaml && git commit --amend --no-edit .sever.yaml
 
 pre-commit:
   parallel: true
@@ -24,17 +41,17 @@ pre-commit:
       tags: security gotool
       name: gitleaks-scan
       # run: docker run -v ${PWD}:/repo zricethezav/gitleaks:latest --path="/repo" --pretty -v
-      run: gitleaks --pretty --exclude-forks --config=.gitleaks.toml --depth=1  # This expands to past commits --repo-path=
+      run: gitleaks --pretty --exclude-forks --config=.gitleaks.toml --depth=1 # This expands to past commits --repo-path=
     markdownlint:
       tags: docker
       name: markdownlint-autofix
-      glob: "**/*/*.md"
+      glob: '**/*/*.md'
       run: docker run -i --rm -v ${PWD}:/work tmknom/markdownlint:latest --fix {files}
     shellcheck:
       tags: gotool
       name: shellcheck
       files: git ls-files -m
-      glob: "*.sh"
+      glob: '*.sh'
       run: docker run --rm -v ${PWD}:/mnt koalaman/shellcheck:stable --format=json {files}
     gofumpt:
       tags: gotool
@@ -63,5 +80,5 @@ pre-commit:
     govet:
       tags: backend style
       files: git ls-files -m
-      glob: "*.go"
+      glob: '*.go'
       run: go vet {files}
