@@ -2,9 +2,9 @@ pre-commit:
   parallel: true
   tags: go lint
   commands:
-      terragrunt-tidy:
+    terragrunt-tidy:
       tags: terragrunt
       name: teragrunt hclfmt
-      files: git ls-files *.hcl
+      files: git ls-files -- '*.hcl' ':!:*.lock.hcl'
       glob: "*.hcl"
       run: terragrunt hclfmt --terragrunt-hclfmt-file {files}
