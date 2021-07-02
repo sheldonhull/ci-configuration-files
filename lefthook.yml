@@ -4,7 +4,8 @@
 # https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
 #
 
-# Install go get github.com/evilmartians/lefthook
+# ⚡ Install go get github.com/evilmartians/lefthook
+# ⚡ Use install:  go install github.com/evilmartians/lefthook@master
 # This will run the key security checks that will have redacted secrets on output
 ci-checks:
   commands:
