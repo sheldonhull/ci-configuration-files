@@ -65,6 +65,35 @@ tasks:
         go install "github.com/golangci/golangci-lint/cmd/golangci-lint@master" && echo -e  "{{.green}} ✅ golangci-lint {{.nocolor}}"
         go install "github.com/go-critic/go-critic/cmd/gocritic@master" && echo -e  "{{.green}} ✅ gocritic {{.nocolor}}"
         go install github.com/goreleaser/goreleaser@master && echo -e  "{{.green}} ✅ goreleaser {{.nocolor}}"
-        go get -u golang.org/x/tools/cmd/goimports && echo -e  "{{.green}} ✅ goimports {{.nocolor}}"
-        go get -u github.com/mgechev/revive && echo -e  "{{.green}} ✅ revive {{.nocolor}}"
-        go get -u golang.org/x/tools/... && echo -e  "{{.green}} ✅ goimports {{.nocolor}}"
+        # CI TOOLS
+        go install github.com/jstemmer/go-junit-report@latest
+        go install github.com/axw/gocov/gocov@latest
+        go install github.com/AlekSi/gocov-xml@latest
+        go install github.com/matm/gocov-html@latest
+        go install github.com/caarlos0/svu@latest  # Semver versioning tool
+        # precommit and scan tools
+        go install github.com/evilmartians/lefthook@latest
+        go install github.com/owenrumney/squealer/cmd/squealer@latest
+        go install github.com/zricethezav/gitleaks@latest
+
+        # Experimental SEMVER versioning tool (mixes branches + commit history and tag reading)
+        # Included semverbot for experimental usage on versioning. Right now using svu instead, but this requires file to be updated.
+        mkdir -p {{ .TOOLS_DIRECTORY }} || echo -e "{{ .dark_gray}}🔄 skipped creating {{ .TOOLS_DIRECTORY }} directory per already exists {{.nocolor}}"
+        {{if eq OS "windows"}}
+        DOWNLOAD_URL=`curl -sL https://api.github.com/repos/restechnica/semverbot/releases/latest | jq -r '.assets[].browser_download_url' | grep "windows"`
+        curl -qo tools/sbot -sL $DOWNLOAD_URL
+        {{end}}
+        {{if eq OS "darwin"}}
+        DOWNLOAD_URL=`curl -sL https://api.github.com/repos/restechnica/semverbot/releases/latest | jq -r '.assets[].browser_download_url' | grep "darwin"`
+        curl -qo tools/sbot -sL $DOWNLOAD_URL
+        chmod +rwx ./tools/sbot
+        {{end}}
+        {{if eq OS "linux"}}
+        DOWNLOAD_URL=`curl -sL https://api.github.com/repos/restechnica/semverbot/releases/latest | jq -r '.assets[].browser_download_url' | grep "linux"`
+        curl -qo tools/sbot -sL $DOWNLOAD_URL
+        chmod +rwx ./tools/sbot
+        {{end}}
+        echo -e "{{.green}} ✅ go semverbot downloaded to tools{{.nocolor}}"
+
+        # go install golang.org/x/tools/cmd/goimports && echo -e  "{{.green}} ✅ goimports {{.nocolor}}"
+        # go install golang.org/x/tools/...@latest && echo -e  "{{.green}} ✅ goimports {{.nocolor}}"
