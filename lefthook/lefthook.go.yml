@@ -4,8 +4,12 @@
 # https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
 #
 # This will run the key security checks that will have redacted secrets on output
-ci-checks:
+ci-lint:
   commands:
+    lint:
+      tags: lint
+      name: golangci-lint
+      run: golangci-lint run ./... --config .golangci.yml
 
 pre-push:
   commands:

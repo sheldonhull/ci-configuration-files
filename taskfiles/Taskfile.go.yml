@@ -74,7 +74,8 @@ tasks:
         # precommit and scan tools
         go install github.com/evilmartians/lefthook@latest
         go install github.com/owenrumney/squealer/cmd/squealer@latest
-        go install github.com/zricethezav/gitleaks@latest
+        # This doesn't work with install. use module aware mode and get
+        GO111MODULE=on go get github.com/zricethezav/gitleaks/v7
 
         # Experimental SEMVER versioning tool (mixes branches + commit history and tag reading)
         # Included semverbot for experimental usage on versioning. Right now using svu instead, but this requires file to be updated.
