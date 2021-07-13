@@ -1,3 +1,10 @@
+<a name="1.0.5"></a>
+## 1.0.5 (2021-07-13)
+
+
+* There is no user facing commit in this version
+
+
 <a name="1.0.4"></a>
 ## 1.0.4 (2021-07-13)
 
