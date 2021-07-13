@@ -1,3 +1,12 @@
+<a name="1.0.6"></a>
+## 1.0.6 (2021-07-13)
+
+
+#### Bug Fixes
+
+* **r:** include semverbot config for possible use later 5611783c12340550e461a8312cfdc32cf3e8a803
+
+
 <a name="1.0.5"></a>
 ## 1.0.5 (2021-07-13)
 
