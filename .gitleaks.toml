@@ -142,6 +142,9 @@ title = "gitleaks config"
 	tags = ["email"]
 	[rules.allowlist]
 		files = ['''(?i)bashrc''']
+		regexes = [
+			'''(semverbot@github.com)'''
+		]
 		description = "ignore bashrc emails"
 
 
