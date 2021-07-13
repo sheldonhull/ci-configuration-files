@@ -1,0 +1,6 @@
+# lefthook-local.yml
+# pre-push:
+#   exclude_tags:
+#     - go
+exclude_tags:
+  - go

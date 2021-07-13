@@ -1,0 +1,8 @@
+pre-commit:
+  parallel: true
+  tags: formatter python
+  commands:
+    pythonformat:
+    tags: python
+    name: pythonformat
+    run: docker run --rm -v ${PWD}:/src -v ${PWD}/.blackcache:/home/black/.cache --workdir=/src kiwicom/black black .

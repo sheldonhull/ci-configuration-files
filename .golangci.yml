@@ -1,0 +1,21 @@
+linters:
+  skip-dirs:
+    - cmd/test-files
+  # disable-all: true
+  # enable:
+  #   - megacheck
+  #   - govet
+  enable-all: true
+  disable:
+   - scopelint
+   - paralleltest
+   - staticcheck
+   - noctx
+   - wsl
+  #   - prealloc
+  # presets:
+  #   - bugs
+  #   - unused
+
+    # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
+  fast: true
