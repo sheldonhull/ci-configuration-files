@@ -1,0 +1,27 @@
+---
+version: '3'
+silent: true
+output: prefixed
+cmds:
+  init:
+    desc: setup tooling for project and download dependencies
+    cmds:
+      - |
+        # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
+        dotnet --list-sdks  || echo -e "{{ .red}} 🔺 dotnet-tools not available. Please install manually the first time here: https://dotnet.microsoft.com/download and then run command again {{.nocolor}}"
+        # Uninstall manually: dotnet tool uninstall GitVersion.Tool --global
+        dotnet tool install --global GitVersion.Tool || dotnet tool update --global GitVersion.Tool # && echo -e "{{.green}} ✅ gitversion tool installed{{.nocolor}}"
+        # If gitversion gives problems with docker commands then evaluate just running as dotnettool
+  tag:
+    desc: use gitversion to calculate the current tag and then push this to the remote
+    vars:
+      VERSION: 'PATH="$PATH:{{ .HOME }}/.dotnet/tools" dotnet-gitversion /config ./build/GitVersion.yml /showvariable FullSemVer'
+    cmds:
+      - |
+        echo -e "{{.green}} calculated version: {{.reversed}}[{{ .VERSION }}]{{.nocolor}}"
+        git tag -a "{{ .VERSION }}" -m "gitversion"
+  bump:
+    desc: bump the release version
+    cmds:
+      - |
+        git push --no-verify origin --tags
