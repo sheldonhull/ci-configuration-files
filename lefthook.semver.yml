@@ -15,12 +15,21 @@ pre-push:
     #     sbot release version --config .semverbot.toml && echo "sbot release result: $(git describe --always)"
     #     sbot push version --config .semverbot.toml && echo "sbot push version complete"
   commands:
-    bump:
+    # bump:
+    #   tags: semver
+    #   name: bump
+    #   run: |
+    #     unchain release
+    #     echo "unchain: $(git describe --always)"
+    # versioning:
+    #   tags: semver
+    #   name: semver
+    #   run: |
+    #     github.com/bvieira/sv4git
+    gitversion:
       tags: semver
-      name: bump
-      run: |
-        unchain release
-        echo "unchain: $(git describe --always)"
+      name: gitversion
+      run: dotnet-gitversion /config ./build/GitVersion.yml /showvariable FullSemVer
     # # using semver which is installed as go tool
     # semver:
     #   tags: semver
