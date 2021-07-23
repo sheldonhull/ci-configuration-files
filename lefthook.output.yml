@@ -1,0 +1,4 @@
+skip_output:
+  # - meta
+  - success
+  # - summary
