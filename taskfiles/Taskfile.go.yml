@@ -76,9 +76,14 @@ tasks:
         go install github.com/owenrumney/squealer/cmd/squealer@latest
         # This doesn't work with install. use module aware mode and get
         GO111MODULE=on go get github.com/zricethezav/gitleaks/v7
-
+        go install github.com/itchyny/gojq/cmd/gojq@latest # cross platform alternative to jq
+        go install go.atrox.dev/sync-dotenv@latest # used to sync default dotenv files to an example file to avoid commits on main .env
         # Experimental SEMVER versioning tool (mixes branches + commit history and tag reading)
         # Included semverbot for experimental usage on versioning. Right now using svu instead, but this requires file to be updated.
+
+        # Semversion tool
+        go install github.com/bvieira/sv4git@latest
+
         mkdir -p {{ .TOOLS_DIRECTORY }} || echo -e "{{ .dark_gray}}🔄 skipped creating {{ .TOOLS_DIRECTORY }} directory per already exists {{.nocolor}}"
         {{if eq OS "windows"}}
         DOWNLOAD_URL=`curl -sL https://api.github.com/repos/restechnica/semverbot/releases/latest | jq -r '.assets[].browser_download_url' | grep "windows"`
