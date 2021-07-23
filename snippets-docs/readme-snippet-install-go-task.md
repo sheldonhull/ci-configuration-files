@@ -2,8 +2,6 @@
 
 [Install go-task](https://github.com/go-task/task/blob/master/docs/installation.md)
 
-[Install Pre-commit](https://pre-commit.com/#install)
-
 Task is a cross-platform task runner that provides a very simple schema with a similar structure to Makefile.
 This tool supports all platforms (Linux, MacOS, Windows), with a cross-platform shell interpreter, and is built in Go.
 
