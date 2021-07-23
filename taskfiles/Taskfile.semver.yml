@@ -25,3 +25,22 @@ cmds:
     cmds:
       - |
         git push --no-verify origin --tags
+  changeloguru:
+    desc: generate updated changelog using git-chglog
+    summary: |
+      To initialize the first time run: `git-chglog --init`
+    vars:
+      VERSION:
+        sh: '{{ .HOME }}/.dotnet/tools/dotnet-gitversion /config ./build/GitVersion.yml /showvariable FullSemVer'
+    cmds:
+      - |
+        go install github.com/haunt98/changeloguru/cmd/changeloguru@latest
+        changeloguru generate --version {{ .VERSION }}
+  git-chglog:
+    desc: generate updated changelog using git-chglog
+    summary: |
+      To initialize the first time run: `git-chglog --init`
+    cmds:
+      - |
+        go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
+        git-chglog -o CHANGELOG.md --tag-filter-pattern 'v?\d{1,3}\.\d{1,3}\.\d{1,3}'

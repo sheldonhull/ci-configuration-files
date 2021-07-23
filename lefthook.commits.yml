@@ -1,0 +1,6 @@
+# In progress
+commit-message:
+    cm:
+      name: commitlint
+      tags: commit
+      run: /Users/sheldonhull/git/sheldonhull/sv4git/artifacts/git-sv validate-commit-message --path . --file {1}
