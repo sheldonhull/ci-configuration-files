@@ -24,3 +24,8 @@ run:
     - cmd/test-files
     - build
     - artifacts
+    - _tools
+  # lint magefile, but ignore tools.go
+  build-tags:
+    - mage
+    # - tools
