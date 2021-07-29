@@ -53,3 +53,6 @@ Temporary Items
 ./artifacts
 **/*/*.exe
 **/*/bin
+
+
+.env
