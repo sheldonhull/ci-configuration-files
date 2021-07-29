@@ -85,6 +85,8 @@ tasks:
         # Semversion tool
         go install github.com/bvieira/sv4git@latest
 
+        # vendir tool for vendoring things other than Go code
+        go install github.com/vmware-tanzu/carvel-vendir/cmd/vendir@v0.21.1
         mkdir -p {{ .TOOLS_DIRECTORY }} || echo -e "{{ .dark_gray}}🔄 skipped creating {{ .TOOLS_DIRECTORY }} directory per already exists {{.nocolor}}"
         {{if eq OS "windows"}}
         DOWNLOAD_URL=`curl -sL https://api.github.com/repos/restechnica/semverbot/releases/latest | jq -r '.assets[].browser_download_url' | grep "windows"`
