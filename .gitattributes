@@ -1,6 +1,9 @@
 # Prevents issues when working with multiple platforms as developers.
 # For more useful information see this great article: https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/
 # Common settings that generally should always be used with your language specific settings
+# CHECK FOR ISSUES: git ls-files --eol
+# RESOLVE ISSUES:   git add --renormalize .
+
 
 # Auto detect text files and perform LF normalization
 # https://www.davidlaing.com/2012/09/19/customise-your-gitattributes-to-become-a-git-ninja/

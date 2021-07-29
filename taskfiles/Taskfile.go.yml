@@ -81,6 +81,7 @@ tasks:
         # Experimental SEMVER versioning tool (mixes branches + commit history and tag reading)
         # Included semverbot for experimental usage on versioning. Right now using svu instead, but this requires file to be updated.
 
+        go install github.com/dustinkirkland/golang-petname/cmd/petname@master && echo -e  "{{.green}} ✅ petname now is available {{.nocolor}}"
         # Semversion tool
         go install github.com/bvieira/sv4git@latest
 
