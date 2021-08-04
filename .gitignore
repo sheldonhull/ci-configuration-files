@@ -56,3 +56,10 @@ Temporary Items
 
 
 .env
+
+
+artifacts/
+tools
+.artifacts
+_artifacts
+**/*/bin

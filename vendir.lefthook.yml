@@ -1,0 +1,18 @@
+# https://carvel.dev/vendir/docs/latest/
+# vendir sync --file vendir.lefthook.yml
+# Override vendor directory: vendir sync --file vendir.lefthook.yml --directory .lefthook-templates=./
+
+
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: .lefthook-templates
+  contents:
+  - path: exact-sha
+    git:
+      url: https://github.com/sheldonhull/ci-configuration-files.git
+      ref: origin/main
+    includePaths:
+    - lefthook.*.yml
+
+  # see examples/versionselection/ for git+semver support

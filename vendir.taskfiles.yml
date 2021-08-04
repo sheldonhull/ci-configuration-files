@@ -1,0 +1,16 @@
+# https://carvel.dev/vendir/docs/latest/
+# vendir sync --file vendir.taskfiles.yml
+
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: .taskfiles
+  contents:
+  - path: exact-sha
+    git:
+      url: https://github.com/sheldonhull/ci-configuration-files.git
+      ref: origin/main
+    includePaths:
+    - taskfiles/**/*
+
+  # see examples/versionselection/ for git+semver support
