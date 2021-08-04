@@ -27,15 +27,19 @@ pre-commit:
   parallel: false
   tags: go lint
   commands:
+
+    # gofumpt: GO111MODULE=on go get mvdan.cc/gofumpt
     gofumpt:
       tags: go
       name: gofumpt
       run: gofumpt -l -w .
+
     goimports:
       tags: go
       name: goimports
       run: goimports -w .
-    # Install with: go install github.com/golangci/golangci-lint/cmd/golangci-lint
+
+    # golangci-lint: go install github.com/golangci/golangci-lint/cmd/golangci-lint
     golangci-lint:
       tags: go
       run: golangci-lint run ./... --config .golangci.yml --fix
