@@ -1,0 +1,9 @@
+pre-commit:
+  parallel: false
+  tags: fmt yaml
+  commands:
+    # install: go install github.com/gechr/yamlfmt@latest
+    yamlfmt:
+      # files: git diff-index --name-only HEAD
+      glob: '*.yaml|*.yml'
+      run: yamlfmt --write {files}

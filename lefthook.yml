@@ -1,4 +1,3 @@
----
 # EXAMPLE USAGE
 # Refer for explanation to following link:
 # https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
@@ -12,10 +11,10 @@ extends:
   - ./lefthook.python.yml
   - ./lefthook.secrets.yml
   - ./lefthook.semver.yml
+  - ./lefthook.yaml.yml
   - ./lefthook.terragrunt.yml
-
   - ./lefthook.output.yml
-  - ./lefthook.override.yml  # repo specific to allow disabling linters
+  - ./lefthook.override.yml # repo specific to allow disabling linters
 pre-commit:
   parallel: true
   tags: go lint
