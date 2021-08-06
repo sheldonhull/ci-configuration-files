@@ -1,7 +1,7 @@
 # EXAMPLE USAGE
 # Refer for explanation to following link:
 # https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
-#
+# go install github.com/evilmartians/lefthook@latest
 
 # ⚡ Install go get github.com/evilmartians/lefthook
 # ⚡ Use install:  go install github.com/evilmartians/lefthook@master
