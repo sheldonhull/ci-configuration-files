@@ -1,0 +1,89 @@
+# Single File Containing Common Tasks including Mage driven formatting (go development), prettier, yaml/markdown linting and more
+
+# EXAMPLE USAGE
+# Refer for explanation to following link:
+# https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
+# go install github.com/evilmartians/lefthook@latest
+
+# ⚡ Install go get github.com/evilmartians/lefthook
+# ⚡ Use install:  go install github.com/evilmartians/lefthook@master
+# This will run the key security checks that will have redacted secrets on output
+
+# List all files modified: git ls-files **/*.md -m
+# List diff from source that follows up with glob filtering: git diff-index --name-only
+skip:
+  - merge
+  - rebase
+
+pre-commit:
+  tags: markdown fmt
+  commands:
+    markdownlint:
+      name: markdownlint
+      files: git diff-index --name-only HEAD
+      glob: "*.md"
+      run: |
+        echo "⚡ markdownlint on: {files}"
+        for file in {files}
+        do
+          echo "🔨 markdownlint: $file"
+          docker run --rm -v ${PWD}:/workdir --entrypoint="markdownlint-cli2-fix" davidanson/markdownlint-cli2:latest "$file"
+        done
+    # shellcheck:
+    #   tags: gotool
+    #   name: shellcheck
+    #   files: git diff-index --name-only HEAD  # git ls-files -m
+    #   glob: '*.sh'
+    #   run: docker run --rm -v ${PWD}:/mnt koalaman/shellcheck:stable --format=json {files}
+    # not windows compatible yet
+    yamlfmt:
+      files: git diff-index --name-only HEAD
+      glob: "*.yaml|*.yml"
+      skip_empty: false
+      run: yamlfmt --write {files}
+    envfile:
+      name: update env.example file
+      files: "*.env"
+      run: |
+        touch .env
+        sync-dotenv
+    go:
+      piped: true
+      tags: go lint fmt
+      skip_empty: false # ensure pre-commit runs tests even if go files weren't changed
+      commands:
+        fmt:
+          run: MAGEFILE_HASHFAST=1 mage fmt
+        lint:
+          run: MAGEFILE_HASHFAST=1 mage lint
+    js:
+      piped: true
+      tags: js lint fmt
+      commands:
+        prettier:
+          files: git diff --name-only main
+          glob: "*.{js,ts,jsx,tsx}"
+          run: yarn prettier --write {files}
+      # linter:
+      #   files: git diff --name-only main
+      #   glob: '*.{js,ts,jsx,tsx}'
+      #   run: npx eslint {files}
+      # tests:
+      #   run: yarn test --watch=false
+
+pre-push:
+  tags: go lint
+  commands:
+    go:
+      piped: true
+      skip_empty: false # ensure pre-commit runs tests even if go files weren't changed
+      commands:
+        fmt:
+          run: CI=1 MAGEFILE_HASHFAST=1 mage fmt
+        lint:
+          run: CI=1 MAGEFILE_HASHFAST=1 mage lint
+        test:
+          run: CI=1 MAGEFILE_HASHFAST=1 mage go:test
+    gitleaks:
+      tags: security gotool linux macos nowindows
+      run: CI=1 MAGEFILE_HASHFAST=1 mage secrets:check

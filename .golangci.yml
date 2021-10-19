@@ -18,7 +18,7 @@ linters:
   #   - unused
 
     # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
-  fast: true
+  # fast: true
 
 run:
   skip-dirs:
@@ -26,6 +26,8 @@ run:
     - build
     - artifacts
     - _tools
+    - _artifacts
+    - licenses
   # lint magefile, but ignore tools.go
   build-tags:
     - mage
@@ -49,3 +51,7 @@ issues:
     - linters:
         - goerr113
       text: "magefiles don't need to worry about wrapping in the same way"
+  # Fix found issues (if it's supported by the linter)
+  fix: true
+  # Show only new issues created after git revision `REV`
+  # new-from-rev: REV
