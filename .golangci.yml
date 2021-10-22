@@ -3,21 +3,23 @@ linters:
   # enable:
   #   - megacheck
   #   - govet
-  exclude-use-default: false  # Some key checks that will be missing if the default of 'true' is kept.
+  exclude-use-default: false # Some key checks that will be missing if the default of 'true' is kept.
   enable-all: true
   disable:
-   - scopelint
-   - paralleltest
-   - staticcheck
-   - noctx
-   - wsl
-   - lll
+    - scopelint
+    - paralleltest
+    - staticcheck
+    - noctx
+    - wsl
+    - lll
+    - exhaustivestruct
+    - nlreturn
   #   - prealloc
   # presets:
   #   - bugs
   #   - unused
 
-    # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
+  # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
   # fast: true
 
 run:
@@ -27,7 +29,12 @@ run:
     - artifacts
     - _tools
     - _artifacts
-    - licenses
+    - .artifacts
+    - .artifacts
+    - .licenses
+    - _licenses
+    - .tasks
+    - .tools
   # lint magefile, but ignore tools.go
   build-tags:
     - mage
@@ -43,7 +50,7 @@ issues:
         - wrapcheck
     - linters:
         - goerr113
-      text: "do not define dynamic errors"
+      text: 'do not define dynamic errors'
     - path: '.*mage.*go'
       linters:
         - goerr113
