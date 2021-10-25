@@ -35,10 +35,12 @@ run:
     - _licenses
     - .tasks
     - .tools
+    - generated.*
   # lint magefile, but ignore tools.go
   build-tags:
     - mage
-    # - tools
+    - tools
+    - integration
 
 # magefiles don't need to do so much wrapping of errors as a cli tool.
 # exclude from stricter linting
@@ -62,3 +64,116 @@ issues:
   fix: true
   # Show only new issues created after git revision `REV`
   # new-from-rev: REV
+linters-settings:
+  nolintlint:
+    # Enable to ensure that nolint directives are all used. Default is true.
+    allow-unused: false
+    # Disable to ensure that nolint directives don't have a leading space. Default is true.
+    allow-leading-space: true
+    # Exclude following linters from requiring an explanation.  Default is [].
+    allow-no-explanation: []
+    # Enable to require an explanation of nonzero length after each nolint directive. Default is false.
+    require-explanation: true
+    # Enable to require nolint directives to mention the specific linter being suppressed. Default is false.
+    require-specific: true
+  gofumpt:
+    # Select the Go version to target. The default is `1.15`.
+    lang-version: '1.17'
+
+    # Choose whether or not to use the extra rules that are disabled
+    # by default
+    extra-rules: true
+  godox:
+    # report any comments starting with keywords, this is useful for TODO or FIXME comments that
+    # might be left in the code accidentally and should be resolved before merging
+    keywords: # default keywords are TODO, BUG, and FIXME, these can be overwritten by this setting
+      - OPTIMIZE # marks code that should be optimized before merging
+      - HACK # marks hack-arounds that should be removed before merging
+      - TODO
+      - BUG
+      - FIXME
+
+  godot:
+    # comments to be checked: `declarations`, `toplevel`, or `all`
+    scope: declarations
+    # list of regexps for excluding particular comment lines from check
+    exclude:
+      # example: exclude comments which contain numbers
+      # - '[0-9]+'
+    # check that each sentence starts with a capital letter
+    capital: true
+
+  depguard:
+    list-type: blacklist
+    include-go-root: false
+    includeGoStdLib: true
+    packages:
+      - github.com/sirupsen/logrus
+      - log
+    packages-with-error-message:
+      # specify an error message to output when a blacklisted package is used
+      - github.com/sirupsen/logrus: 'logging is allowed only by zerolog. Please use zerolog'
+      - log: 'Use standardized zerolog'
+  wrapcheck:
+    ignorePackageGlobs:
+      - github.com/sheldonhull/magetools/*
+
+  # Configuration can be customized: https://github.com/ldez/tagliatelle
+  # This establishes consistency in the json naming, so that all json tagging uses the same approach.
+  tagliatelle:
+    # check the struck tag name case
+    case:
+      # use the struct field name to check the name of the struct tag
+      use-field-name: true
+      rules:
+        # any struct tag type can be used.
+        # support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`
+        json: goCamel
+        yaml: camel
+        xml: camel
+        bson: camel
+        avro: snake
+        mapstructure: kebab
+
+    errcheck:
+      # report about not checking of errors in type assertions: `a := b.(MyStruct)`;
+      # default is false: such cases aren't reported by default.
+      check-type-assertions: true
+
+      # report about assignment of errors to blank identifier: `num, _ := strconv.Atoi(numStr)`;
+      # default is false: such cases aren't reported by default.
+      check-blank: false
+
+      # [deprecated] comma-separated list of pairs of the form pkg:regex
+      # the regex is used to ignore names within pkg. (default "fmt:.*").
+      # see https://github.com/kisielk/errcheck#the-deprecated-method for details
+      ignore: fmt:.*,io/ioutil:^Read.*
+
+      # [deprecated] use exclude-functions instead.
+      # path to a file containing a list of functions to exclude from checking
+      # see https://github.com/kisielk/errcheck#excluding-functions for details
+      exclude: /path/to/file.txt
+
+      # list of functions to exclude from checking, where each entry is a single function to exclude.
+      # see https://github.com/kisielk/errcheck#excluding-functions for details
+      exclude-functions:
+        - io/ioutil.ReadFile
+        - io.Copy(*bytes.Buffer)
+        - io.Copy(os.Stdout)
+        - resp.Body.Close()
+  govet:
+    # report about shadowed variables
+    check-shadowing: true
+
+    # settings per analyzer
+    settings:
+      printf: # analyzer name, run `go tool vet help` to see all analyzers
+        funcs: # run `go tool vet help printf` to see available settings for `printf` analyzer
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+
+    # enable or disable analyzers by name
+    # run `go tool vet help` to see all analyzers
+    enable-all: true
