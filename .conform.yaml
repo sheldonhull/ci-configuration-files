@@ -1,0 +1,43 @@
+# https://github.com/talos-systems/conform
+# go install github.com/talos-systems/conform/cmd/conform@latest
+# docker run --rm -it -v $PWD:/src -w /src ghcr.io/talos-systems/conform:v0.1.0-alpha.22 enforce
+
+policies:
+  - type: commit
+    spec:
+      header:
+        length: 89
+        imperative: true
+        case: lower
+        invalidLastCharacters: .
+
+      body:
+        required: false
+      conventional:
+        types:
+          - chore
+          - docs
+          - perf
+          - refactor
+          - style
+          - test
+          - release
+          - feat
+          - fix
+          - build
+          - ci
+          - revert
+        scopes:
+          - adr # adr documentation
+          - linting # changes to lint settings
+          - mage # tasks
+          - pipelines # azure pipelines
+          - readme # updates to readme
+          - vscode # vscode settings
+        descriptionLength: 72
+      dco: false
+      gpg:
+        required: false
+      spellcheck:
+        locale: US
+      maximumOfOneCommit: false
