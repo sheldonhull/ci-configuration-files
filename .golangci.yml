@@ -50,6 +50,9 @@ issues:
       linters:
         - goerr113
         - wrapcheck
+        - funlen # complexity length in tests isn't a big concern
+        - cyclop # complexity length in tests isn't a big concern
+        - gocognit # complexity length in tests isn't a big concern
     - linters:
         - goerr113
       text: 'do not define dynamic errors'
@@ -114,6 +117,23 @@ linters-settings:
       # specify an error message to output when a blacklisted package is used
       - github.com/sirupsen/logrus: 'logging is allowed only by zerolog. Please use zerolog'
       - log: 'Use standardized zerolog'
+      - io/ioutil: 'io/ioutil was deprecated in Go 1.16: https://tip.golang.org/doc/go1.16#ioutil'
+    # improved go mod checks
+    gomodguard:
+      blocked:
+        modules:
+          - github.com/sirupsen/logrus:
+              recommendations:
+                - github.com/rs/zerolog
+              reason: 'logging is allowed only by zerolog. Please use zerolog'
+        # List of blocked module version constraints
+        # Version constraint, see https://github.com/Masterminds/semver#basic-comparisons
+        versions:
+          - github.com/peterbourgon/ff:
+            version: '>= 3'
+            reason: 'v3 should be used'
+        local_replace_directives: false # Set to true to raise lint issues for packages that are loaded from a local path via replace directive
+
   wrapcheck:
     ignorePackageGlobs:
       - github.com/sheldonhull/magetools/*
