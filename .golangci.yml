@@ -195,6 +195,8 @@ linters-settings:
     enable-all: true
     # report about shadowed variables
     check-shadowing: true
+    disable:
+      - fieldalignment
 
     # settings per analyzer
     settings:
