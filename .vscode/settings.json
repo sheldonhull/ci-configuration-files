@@ -1,6 +1,7 @@
 {
     "go.inferGopath": false,
     "conventionalCommits.scopes": [
-        "lefthook"
+        "lefthook",
+        "golangci-lint"
     ]
 }
