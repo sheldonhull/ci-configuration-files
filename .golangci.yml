@@ -243,3 +243,4 @@ linters-settings:
       - x
       - id
       - b # for functions using byte input this is acceptable nomenclature
+      - is # for testing framework
