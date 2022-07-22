@@ -15,6 +15,7 @@ linters:
     - exhaustivestruct
     - nlreturn
     - gci
+    - godox
     # - gofumpt
     # - gofmt
   #   - prealloc
@@ -99,15 +100,15 @@ linters-settings:
     # Choose whether or not to use the extra rules that are disabled
     # by default
     extra-rules: true
-  godox:
-    # report any comments starting with keywords, this is useful for TODO or FIXME comments that
-    # might be left in the code accidentally and should be resolved before merging
-    keywords: # default keywords are TODO, BUG, and FIXME, these can be overwritten by this setting
-      - OPTIMIZE # marks code that should be optimized before merging
-      - HACK # marks hack-arounds that should be removed before merging
-      - TODO
-      - BUG
-      - FIXME
+  # godox:
+  #   # report any comments starting with keywords, this is useful for TODO or FIXME comments that
+  #   # might be left in the code accidentally and should be resolved before merging
+  #   keywords: # default keywords are TODO, BUG, and FIXME, these can be overwritten by this setting
+  #     - OPTIMIZE # marks code that should be optimized before merging
+  #     - HACK # marks hack-arounds that should be removed before merging
+  #     - TODO
+  #     - BUG
+  #     - FIXME
 
   godot:
     # comments to be checked: `declarations`, `toplevel`, or `all`
