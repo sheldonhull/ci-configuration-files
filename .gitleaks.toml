@@ -161,27 +161,27 @@ title = "gitleaks config"
 		    '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
 		]
 
-[[rules]]
-	description = "High Entropy"
-	regex = '''[0-9a-zA-Z-_!{}/=]{4,120}'''
-  	file = '''(?i)(dump.sql|high-entropy-misc.txt)$'''
-	tags = ["entropy"]
-    [[rules.Entropies]]
-        Min = "4.3"
-        Max = "7.0"
-    [rules.allowlist]
-        description = "ignore ssh key and pems"
-        files = ['''(pem|ppk|env)$''']
-        paths = ['''(.*)?ssh''']
+# [[rules]]
+# 	description = "High Entropy"
+# 	regex = '''[0-9a-zA-Z-_!{}/=]{4,120}'''
+#   	file = '''(?i)(dump.sql|high-entropy-misc.txt)$'''
+# 	tags = ["entropy"]
+#     [[rules.Entropies]]
+#         Min = "4.3"
+#         Max = "7.0"
+#     [rules.allowlist]
+#         description = "ignore ssh key and pems"
+#         files = ['''(pem|ppk|env)$''']
+#         paths = ['''(.*)?ssh''']
 
-[[rules]]
-	description = "Potential bash var"
-	regex='''(?i)(=)([0-9a-zA-Z-_!{}=]{4,120})'''
-	tags = ["key", "bash", "API", "generic"]
-        [[rules.Entropies]]
-            Min = "3.5"
-            Max = "4.5"
-            Group = "1"
+# [[rules]]
+# 	description = "Potential bash var"
+# 	regex='''(?i)(=)([0-9a-zA-Z-_!{}=]{4,120})'''
+# 	tags = ["key", "bash", "API", "generic"]
+#         [[rules.Entropies]]
+#             Min = "3.5"
+#             Max = "4.5"
+#             Group = "1"
 
 [[rules]]
 	description = "WP-Config"
