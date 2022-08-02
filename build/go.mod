@@ -1,6 +1,6 @@
 module github.com/sheldonhull/ci-configuration-files/build
 
-go 1.16
+go 1.19
 
 require (
 	github.com/client9/misspell v0.3.4
