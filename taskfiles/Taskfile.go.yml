@@ -27,7 +27,7 @@ vars:
     sh: git describe --always
   LDFLAGS: -ldflags "-X main._version={{ .VERSION }} -X main._build={{ .BUILD }}"
   LDFLAGS_DOCKER: -ldflags "-X main._version={{ .VERSION }} -X main._build={{ .BUILD }} -s -w"
-  GOMARKDOC_FORMAT: azure-devops  # also supports gitlab and github
+  GOMARKDOC_FORMAT: azure-devops # also supports gitlab and github
 
 tasks:
   vars:
