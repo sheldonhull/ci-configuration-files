@@ -1,3 +1,4 @@
+---
 linters:
   # disable-all: true
   # enable:
@@ -8,43 +9,50 @@ linters:
   disable:
     - scopelint
     - paralleltest
-    - staticcheck
     - noctx
     - wsl
     - lll
-    - exhaustivestruct
-    - nlreturn
+    - interfacer
+    - golint # The linter 'golint' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.
+    - maligned
+    - goimports # causes whiplash with gofumpt
     - gci
-    - godox
-    # - gofumpt
-    # - gofmt
-  #   - prealloc
-  # presets:
-  #   - bugs
-  #   - unused
+    - gofmt
+    - nlreturn # until it supports autofix, just ignore as too much manual work
+    - gofumpt
+    - exhaustivestruct
+    - exhaustruct # replaced exhaustivestruct by https://github.com/golangci/golangci-lint/pull/2667, v1.46.0.
+    - wrapcheck
+    # - godox
+    - execinquery # Causes error in mtservice by https://github.com/golangci/golangci-lint/issues/2835, v1.46.0. Should remove from here after the bug is fixed.
+    - nonamedreturns # Added by https://github.com/golangci/golangci-lint/pull/2701, v1.46.0. Named returns are useful for defer. May remove from here and use nolint in future task.
+    - forbidigo # Disabled 2022-07-22 until migrating to a structured logger package. FMT is allowed for now
+    - structcheck # abandoned
+    - varcheck # abandoned
+    - deadcode # abandoned
+    - ifshort # abandoned
+    # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
+    # fast: true
 
-  # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
-  # fast: true
-
-run:
-  skip-dirs:
-    - cmd/test-files
-    - build
-    - artifacts
-    - _tools
-    - _artifacts
-    - .artifacts
-    - .artifacts
-    - .licenses
-    - _licenses
-    - .tasks
-    - .tools
-    - generated.*
-  # lint magefile, but ignore tools.go
-  build-tags:
-    - mage
-    - tools
-    - integration
+  run:
+    skip-dirs:
+      - cmd/test-files
+      - build
+      - artifacts
+      - _tools
+      - _artifacts
+      - .artifacts
+      - .artifacts
+      - .licenses
+      - _licenses
+      - .tasks
+      - .tools
+      - generated.*
+    # lint magefile, but ignore tools.go
+    build-tags:
+      - mage
+      - tools
+      - integration
 
 # magefiles don't need to do so much wrapping of errors as a cli tool.
 # exclude from stricter linting
@@ -62,18 +70,28 @@ issues:
         - revive # additional checks like constants and more aren't important in the test code
     - linters:
         - goerr113
-      text: 'do not define dynamic errors'
-    - path: '.*mage.*go'
+      text: do not define dynamic errors
+    - path: .*mage.*go
       linters:
         - goerr113
         - wrapcheck
     - linters:
         - goerr113
-      text: "magefiles don't need to worry about wrapping in the same way"
+      text: magefiles don't need to worry about wrapping in the same way
     - linters:
         - govet
         - revive
       text: 'shadow: declaration of .err. shadows declaration' # err shadowing is a normal practice, don't worry about this
+    - path: magefiles/
+      linters:
+        - goerr113
+        - wrapcheck
+        - funlen # a lot of these are a longer automation tasks and not worth breaking down
+        - gocyclo # a lot of these are a longer automation tasks and not worth breaking down
+        - cyclop # a lot of these are a longer automation tasks and not worth breaking down
+        - gocognit # a lot of these are a longer automation tasks and not worth breaking down
+        - maintidx # a lot of these are a longer automation tasks and not worth breaking down
+        - deadcode # stand alone function are common
     # - linters:
     #     - revive
     #   text: 'add-constant: avoid magic numbers like ''(\d*)'', create a named constant for it'
@@ -114,9 +132,9 @@ linters-settings:
     # comments to be checked: `declarations`, `toplevel`, or `all`
     scope: declarations
     # list of regexps for excluding particular comment lines from check
-    exclude:
-      # example: exclude comments which contain numbers
-      # - '[0-9]+'
+    # exclude:
+    # example: exclude comments which contain numbers
+    # - '[0-9]+'
     # check that each sentence starts with a capital letter
     capital: true
 
@@ -129,8 +147,8 @@ linters-settings:
       - log
     packages-with-error-message:
       # specify an error message to output when a blacklisted package is used
-      - github.com/sirupsen/logrus: 'logging is allowed only by zerolog. Please use zerolog'
-      - log: 'Use standardized zerolog'
+      - github.com/sirupsen/logrus: logging is allowed only by zerolog. Please use zerolog
+      - log: Use standardized zerolog
       - io/ioutil: 'io/ioutil was deprecated in Go 1.16: https://tip.golang.org/doc/go1.16#ioutil'
     # improved go mod checks
     gomodguard:
@@ -139,13 +157,13 @@ linters-settings:
           - github.com/sirupsen/logrus:
               recommendations:
                 - github.com/rs/zerolog
-              reason: 'logging is allowed only by zerolog. Please use zerolog'
+              reason: logging is allowed only by zerolog. Please use zerolog
         # List of blocked module version constraints
         # Version constraint, see https://github.com/Masterminds/semver#basic-comparisons
         versions:
           - github.com/peterbourgon/ff:
             version: '>= 3'
-            reason: 'v3 should be used'
+            reason: v3 should be used
         local_replace_directives: false # Set to true to raise lint issues for packages that are loaded from a local path via replace directive
 
   wrapcheck:
@@ -215,7 +233,10 @@ linters-settings:
     ignore-generated-header: true
     enableAllRules: true
     exclude:
-      - '.*_test.go'
+      - .*_test.go
+    rules:
+      - name: var-naming
+        severity: error
     # enable or disable analyzers by name
     # run `go tool vet help` to see all analyzers
   varnamelen:
@@ -245,3 +266,7 @@ linters-settings:
       - id
       - b # for functions using byte input this is acceptable nomenclature
       - is # for testing framework
+
+  # Show only new issues created after git revision `REV`
+  whole-files: false # Only evaluate the sections of changed code rather than the entire file
+  # ONLY REQUIRED FOR OLD PROJECTS, NEW SHOULD COVER ALL ISSUES: new-from-rev: HEAD~
