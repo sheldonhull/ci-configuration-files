@@ -1,105 +1,20 @@
 ---
-linters:
-  # disable-all: true
-  # enable:
-  #   - megacheck
-  #   - govet
-  exclude-use-default: false # Some key checks that will be missing if the default of 'true' is kept.
-  enable-all: true
-  disable:
-    - scopelint
-    - paralleltest
-    - noctx
-    - wsl
-    - lll
-    - interfacer
-    - golint # The linter 'golint' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.
-    - maligned
-    - goimports # causes whiplash with gofumpt
-    - gci
-    - gofmt
-    - nlreturn # until it supports autofix, just ignore as too much manual work
-    - gofumpt
-    - exhaustivestruct
-    - exhaustruct # replaced exhaustivestruct by https://github.com/golangci/golangci-lint/pull/2667, v1.46.0.
-    - wrapcheck
-    # - godox
-    - execinquery # Causes error in mtservice by https://github.com/golangci/golangci-lint/issues/2835, v1.46.0. Should remove from here after the bug is fixed.
-    - nonamedreturns # Added by https://github.com/golangci/golangci-lint/pull/2701, v1.46.0. Named returns are useful for defer. May remove from here and use nolint in future task.
-    - forbidigo # Disabled 2022-07-22 until migrating to a structured logger package. FMT is allowed for now
-    - structcheck # abandoned
-    - varcheck # abandoned
-    - deadcode # abandoned
-    - ifshort # abandoned
-    # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
-    # fast: true
-
-  run:
-    skip-dirs:
-      - cmd/test-files
-      - build
-      - artifacts
-      - _tools
-      - _artifacts
-      - .artifacts
-      - .artifacts
-      - .licenses
-      - _licenses
-      - .tasks
-      - .tools
-      - generated.*
-    # lint magefile, but ignore tools.go
-    build-tags:
-      - mage
-      - tools
-      - integration
-
-# magefiles don't need to do so much wrapping of errors as a cli tool.
-# exclude from stricter linting
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - goerr113
-        - wrapcheck
-        - funlen # complexity length in tests isn't a big concern
-        - cyclop # complexity length in tests isn't a big concern
-        - gocognit # complexity length in tests isn't a big concern
-        - unparam # unused params in tests isn't as important
-        - varnamelen # don't worry about variable name length in test code (nice to keep clean, but not important enough to speed time on)
-        - revive # additional checks like constants and more aren't important in the test code
-    - linters:
-        - goerr113
-      text: do not define dynamic errors
-    - path: .*mage.*go
-      linters:
-        - goerr113
-        - wrapcheck
-    - linters:
-        - goerr113
-      text: magefiles don't need to worry about wrapping in the same way
-    - linters:
-        - govet
-        - revive
-      text: 'shadow: declaration of .err. shadows declaration' # err shadowing is a normal practice, don't worry about this
-    - path: magefiles/
-      linters:
-        - goerr113
-        - wrapcheck
-        - funlen # a lot of these are a longer automation tasks and not worth breaking down
-        - gocyclo # a lot of these are a longer automation tasks and not worth breaking down
-        - cyclop # a lot of these are a longer automation tasks and not worth breaking down
-        - gocognit # a lot of these are a longer automation tasks and not worth breaking down
-        - maintidx # a lot of these are a longer automation tasks and not worth breaking down
-        - deadcode # stand alone function are common
-    # - linters:
-    #     - revive
-    #   text: 'add-constant: avoid magic numbers like ''(\d*)'', create a named constant for it'
-  # Fix found issues (if it's supported by the linter)
-  fix: true
-  # Show only new issues created after git revision `REV`
-  # new-from-rev: REV
+# Any changes need to be carefully reviewed!
+output:
+  # colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions
+  # default is "colored-line-number"
+  # format: colored-line-number
+  # Compact format: tab
+  format: tab
 linters-settings:
+  misspell:
+    locale: US
+  gomnd:
+    settings:
+      mnd:
+        # the list of enabled checks, see https://github.com/tommy-muehle/go-mnd/#checks for description.
+        checks: [argument, case, condition, return]
+        ignored-functions: strconv.ParseFloat,rsa.GenerateKey
   nolintlint:
     # Enable to ensure that nolint directives are all used. Default is true.
     allow-unused: false
@@ -113,42 +28,46 @@ linters-settings:
     require-specific: true
   gofumpt:
     # Select the Go version to target. The default is `1.15`.
-    lang-version: '1.17'
+    lang-version: '1.18'
 
     # Choose whether or not to use the extra rules that are disabled
     # by default
     extra-rules: true
-  # godox:
-  #   # report any comments starting with keywords, this is useful for TODO or FIXME comments that
-  #   # might be left in the code accidentally and should be resolved before merging
-  #   keywords: # default keywords are TODO, BUG, and FIXME, these can be overwritten by this setting
-  #     - OPTIMIZE # marks code that should be optimized before merging
-  #     - HACK # marks hack-arounds that should be removed before merging
-  #     - TODO
-  #     - BUG
-  #     - FIXME
+  godox:
+    # report any comments starting with keywords, this is useful for TODO or FIXME comments that
+    # might be left in the code accidentally and should be resolved before merging
+    keywords: # default keywords are TODO, BUG, and FIXME, these can be overwritten by this setting
+      - OPTIMIZE # marks code that should be optimized before merging
+      - HACK # marks hack-arounds that should be removed before merging
+      - TODO
+      - BUG
+      - FIXME
 
   godot:
     # comments to be checked: `declarations`, `toplevel`, or `all`
-    scope: declarations
+    scope: all
     # list of regexps for excluding particular comment lines from check
-    # exclude:
-    # example: exclude comments which contain numbers
-    # - '[0-9]+'
+    exclude:
+      - //nolint
+      - (API)
+      - ^[ ]*@
+      # example: exclude comments which contain numbers
+      # - '[0-9]+'
+
     # check that each sentence starts with a capital letter
     capital: true
 
   depguard:
     list-type: blacklist
-    include-go-root: false
-    includeGoStdLib: true
+    include-go-root: true
+    includeGoStdLib: true #  include standard library so we can make sure log and other conflicting packages aren't pulled.
     packages:
       - github.com/sirupsen/logrus
-      - log
+      # - log # Disabled temporarily
     packages-with-error-message:
       # specify an error message to output when a blacklisted package is used
       - github.com/sirupsen/logrus: logging is allowed only by zerolog. Please use zerolog
-      - log: Use standardized zerolog
+      # - log: Use zerolog # Disabled temporarily
       - io/ioutil: 'io/ioutil was deprecated in Go 1.16: https://tip.golang.org/doc/go1.16#ioutil'
     # improved go mod checks
     gomodguard:
@@ -156,19 +75,20 @@ linters-settings:
         modules:
           - github.com/sirupsen/logrus:
               recommendations:
-                - github.com/rs/zerolog
+                - internal/logging
               reason: logging is allowed only by zerolog. Please use zerolog
         # List of blocked module version constraints
         # Version constraint, see https://github.com/Masterminds/semver#basic-comparisons
-        versions:
-          - github.com/peterbourgon/ff:
-            version: '>= 3'
-            reason: v3 should be used
+        # versions:
+        #   - github.com/go-redis/redis:
+        #     version: '>= 8.0'
+        #     reason: v8 required for new functionality, prior versions will not work
         local_replace_directives: false # Set to true to raise lint issues for packages that are loaded from a local path via replace directive
 
   wrapcheck:
     ignorePackageGlobs:
       - github.com/sheldonhull/magetools/*
+      - github.com/DelineaXPM/magefiles/*
 
   # Configuration can be customized: https://github.com/ldez/tagliatelle
   # This establishes consistency in the json naming, so that all json tagging uses the same approach.
@@ -201,18 +121,17 @@ linters-settings:
       # see https://github.com/kisielk/errcheck#the-deprecated-method for details
       ignore: fmt:.*,io/ioutil:^Read.*
 
-      # [deprecated] use exclude-functions instead.
-      # path to a file containing a list of functions to exclude from checking
-      # see https://github.com/kisielk/errcheck#excluding-functions for details
-      exclude: /path/to/file.txt
-
       # list of functions to exclude from checking, where each entry is a single function to exclude.
       # see https://github.com/kisielk/errcheck#excluding-functions for details
       exclude-functions:
         - io/ioutil.ReadFile
         - io.Copy(*bytes.Buffer)
         - io.Copy(os.Stdout)
-        - resp.Body.Close()
+        - io.Closer.Close #https://github.com/kisielk/errcheck/issues/132
+        - io.Closer.Body.Close
+
+        # - (*net/http.Client).Do
+
   govet:
     enable-all: true
     # report about shadowed variables
@@ -228,17 +147,6 @@ linters-settings:
           - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
           - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
           - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
-  revive:
-    # see https://github.com/mgechev/revive#available-rules for details.
-    ignore-generated-header: true
-    enableAllRules: true
-    exclude:
-      - .*_test.go
-    rules:
-      - name: var-naming
-        severity: error
-    # enable or disable analyzers by name
-    # run `go tool vet help` to see all analyzers
   varnamelen:
     # The longest distance, in source lines, that is being considered a "small scope." (defaults to 5)
     # Variables used in at most this many lines will be ignored.
@@ -260,12 +168,135 @@ linters-settings:
     ignore-names:
       - err
       - tt
-      - tc
       - i
       - x
       - id
       - b # for functions using byte input this is acceptable nomenclature
-      - is # for testing framework
+      - ok # for functions doing checks on type assertions this is acceptable nomenclature
+      - zl # logger should be sure to keep brief
+      - fs # flagset, standard naming is acceptable.
+    # enable or disable analyzers by name
+    disable:
+      - fieldalignment # fieldalignment is not a priority except in high performance scenarios, and is a form of premature optimization
+  revive:
+    # see https://github.com/mgechev/revive#available-rules for details.
+    ignore-generated-header: true
+    enableAllRules: true
+    exclude:
+      - .*_test.go
+    #    severity: warning
+    #    rules:
+    rules:
+      - name: var-naming
+        severity: error
+        #arguments:
+
+#      - name: indent-error-flow
+#        severity: warning
+#      - name: add-constant
+#        severity: warning
+#        arguments:
+#          - maxLitCount: '3'
+#            allowStrs: '""'
+#            allowInts: '0,1,2'
+#            allowFloats: '0.0,0.,1.0,1.,2.0,2.'
+linters:
+  # disable-all: true
+  # enable:
+  #   - megacheck
+  #   - govet
+  exclude-use-default: false # Some key checks that will be missing if the default of 'true' is kept. (comments on exported and other will be missing!)
+  enable-all: true # disabling to provide control on mage and project tooling. pass --enable-all on the cli calls to run all.
+  disable:
+    - scopelint
+    - paralleltest
+    # - staticcheck
+    - noctx
+    - wsl
+    - lll
+    - interfacer
+    - golint # The linter 'golint' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive.
+    - maligned
+    - goimports # causes whiplash with gofumpt
+    - gci
+    - gofmt
+    - nlreturn # until it supports autofix, just ignore as too much manual work
+    - gofumpt
+    - exhaustivestruct
+    - exhaustruct # replaced exhaustivestruct by https://github.com/golangci/golangci-lint/pull/2667, v1.46.0.
+    - wrapcheck
+    - godox
+    - execinquery # Causes error in mtservice by https://github.com/golangci/golangci-lint/issues/2835, v1.46.0. Should remove from here after the bug is fixed.
+    - nonamedreturns # Added by https://github.com/golangci/golangci-lint/pull/2701, v1.46.0. Named returns are useful for defer. May remove from here and use nolint in future task.
+    - forbidigo # Disabled 2022-07-22 until migrating to a structured logger package. FMT is allowed for now
+    - structcheck # abandoned
+    - varcheck # abandoned
+    - deadcode # abandoned
+    - ifshort # abandoned
+    - godox # for periods
+
+# VSCode sets golangci-lint fast flag to avoid IDE issues in this project.
+# Disabled and instead scoping lint on save to current package.
+# To check everything run command Lint: Workspace
+# fast: false
+run:
+  # Fix found issues (if it's supported by the linter)
+  # fix: true
+  # skip-dirs-use-default: true # Enables skipping of directories:
+  # - vendor$, third_party$, testdata$, examples$, Godeps$, builtin$
+  skip-dirs-use-default: true
+  skip-dirs:
+    - build
+    - artifacts
+    - _tools
+    - vendor
+    - vendor$
+  # lint magefile, but ignore tools.go
+  build-tags:
+    - mage
+    - tools
+    - integration
+    - codeanalysis
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - goerr113
+        - wrapcheck
+        - funlen # complexity length in tests isn't a big concern
+        - cyclop # complexity length in tests isn't a big concern
+        - gocognit # complexity length in tests isn't a big concern
+        - unparam # unused params in tests isn't as important
+        - varnamelen # don't worry about variable name length in test code (nice to keep clean, but not important enough to speed time on)
+        - revive # additional checks like constants and more aren't important in the test code
+    - linters:
+        - goerr113
+      text: do not define dynamic errors
+    - path: magefiles/
+      linters:
+        - goerr113
+        - wrapcheck
+        - funlen # a lot of these are a longer automation tasks and not worth breaking down
+        - gocyclo # a lot of these are a longer automation tasks and not worth breaking down
+        - cyclop # a lot of these are a longer automation tasks and not worth breaking down
+        - gocognit # a lot of these are a longer automation tasks and not worth breaking down
+        - maintidx # a lot of these are a longer automation tasks and not worth breaking down
+        - deadcode # not appliable to standalone tasks
+    - linters:
+        - goerr113
+      text: magefiles don't need to worry about wrapping in the same way
+    - linters:
+        - govet
+        - revive
+      text: 'shadow: declaration of .err. shadows declaration' # err shadowing is a normal practice, don't worry about this
+    - path: mocks
+      linters:
+        - godot
+      text: mocked files do not need to be checked
+
+    # - linters:
+    #     - revive
+    #   text: 'add-constant: avoid magic numbers like ''(\d*)'', create a named constant for it'
 
   # Show only new issues created after git revision `REV`
   whole-files: false # Only evaluate the sections of changed code rather than the entire file
