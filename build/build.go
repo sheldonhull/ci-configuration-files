@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/goyek/goyek"
+	"github.com/goyek/goyek/v2"
 	"github.com/mattn/go-shellwords"
 )
 
