@@ -2,7 +2,7 @@ module github.com/sheldonhull/ci-configuration-files/build
 
 go 1.22.1
 
-toolchain go1.23.3
+toolchain go1.23.4
 
 require (
 	github.com/client9/misspell v0.3.4
