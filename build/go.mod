@@ -1,8 +1,6 @@
 module github.com/sheldonhull/ci-configuration-files/build
 
-go 1.22.1
-
-toolchain go1.23.3
+go 1.25.0
 
 require (
 	github.com/client9/misspell v0.3.4
@@ -184,7 +182,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/mod v0.22.0 // indirect
 	golang.org/x/sync v0.9.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
 	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/tools v0.27.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
